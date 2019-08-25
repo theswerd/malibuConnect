@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:malibu/Checklist.dart';
 import 'package:malibu/teachers.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'constants.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -21,15 +24,15 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
   @override
   void initState() {
     super.initState();
-    baseTabController = new TabController(vsync: this, length: 4);
+    baseTabController = new TabController(vsync: this, length: 3);
     thebody = TabBarView(
       physics: NeverScrollableScrollPhysics(),
         controller: baseTabController,
         children: <Widget>[
-          HomePage(),
+       //   HomePage(),
           MapClass(),
           Calendar(),
-          Container(color: Colors.deepPurpleAccent,),
+          Checklist()
 
         ],
       );
@@ -67,7 +70,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
       appBar: AppBar(
         actions: <Widget>[
           IconButton(icon: Icon(Icons.info_outline),onPressed: (){
-            List children = [];
+            List<Widget> children = [];
             switch (baseTabController.index) {
               case 0:
               children = [
@@ -99,6 +102,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
                   ),
 
                 ),
+                Constants.officialWebsiteAction("http://www.malibu.smmusd.org/about/images/MHS-Campus-Map.gif", "Map", context),
+                Constants.reportAction,
                 CupertinoActionSheetAction(
                   child: Text("Share"),
                   onPressed: ()=>Share.share("Check out Malibu High Schools new app!\n\n "+Constants.ourWebsite),
@@ -106,6 +111,57 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
               ];
                 break;
               case 1:
+              children = [
+                CupertinoActionSheetAction(
+                  child: Text("Extra Info"),
+                  onPressed: ()=>showCupertinoModalPopup(
+                    context:context,
+                    builder: (c)=>CupertinoAlertDialog(
+                      title: Text("Extra Info"),
+                      content: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: TextStyle(color: Colors.black),
+                          children: <TextSpan>[//officialWebsiteAction
+                            TextSpan(text: "The "),
+                            TextSpan(text: "Calendar", style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: " is taken live from the "),
+                            TextSpan(text: "Malibu High School official Calendar.", style: TextStyle(fontWeight: FontWeight.bold))
+                          ]
+                        ),
+                      ),
+                      actions: <Widget>[
+                        CupertinoDialogAction(
+                          child: Text("Ok"),
+                          onPressed: ()=>Navigator.of(context).pop(),
+                        )
+                      ],
+                    )
+                  ),
+
+                ),
+                Constants.officialWebsiteAction("http://www.malibu.smmusd.org/calendar.html", "Calendar", context),
+                CupertinoActionSheetAction(
+                  child: Text("District Calendar"),
+                  onPressed: ()=>Navigator.of(context).push(
+                    MaterialPageRoute(
+                      maintainState: true,
+                      fullscreenDialog: true,
+                      builder:(c)=>WebviewScaffold(url: "http://www.smmusd.org/calendar/cal1920.pdf",
+                       appBar: AppBar(
+                         title: Text("District Calendar"),
+                         backgroundColor: Constants.baseColor,
+                         actions: <Widget>[Tooltip(message: "Official Website", child: IconButton(icon: Icon(MdiIcons.launch),onPressed: ()=>launch("http://www.smmusd.org/calendar/cal1920.pdf"),),),],
+                         ),)
+                    )
+                  ),
+                ),
+                Constants.reportAction,
+                CupertinoActionSheetAction(
+                  child: Text("Share"),
+                  onPressed: ()=>Share.share("Check out Malibu High Schools new app!\n\n "+Constants.ourWebsite),
+                )
+              ];
                 
                 break;
               case 2:
@@ -140,7 +196,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
           controller: baseTabController,
           children: <Widget>[
             Center(child:Text("Malibu High School")),
-            Center(child:Text("Map")),
+            //Center(child:Text("Map")),
             Center(child:Text("Calendar")),
             Center(child:Text("Checklist"))
 
@@ -153,9 +209,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
         labelColor: Constants.baseColor,
         unselectedLabelColor: Colors.black,
         tabs: <Widget>[
-          Tab(
-            icon: Icon(MdiIcons.homeOutline),
-          ),
+          // Tab(
+          //   icon: Icon(MdiIcons.homeOutline),
+          // ),
           Tab(
             icon: Icon(MdiIcons.mapOutline)
           ),

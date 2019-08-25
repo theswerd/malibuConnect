@@ -9,6 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart' as s;
+import 'package:vibrate/vibrate.dart';
 //import 'package:launch_review/launch_review.dart';
 import 'package:share/share.dart';
 import 'constants.dart';
@@ -22,22 +23,37 @@ class Teachers extends StatefulWidget {
   class _TeachersState extends State<Teachers> with TickerProviderStateMixin{
   Widget bodyWidget = Center(child:ColorLoader3());
   Widget titleWidget = Text("Staff Directory");
+  GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   AnimationController titleController;
   List teachers;
-  bool hasGottenTeachers;
+  List usedTeachers;
+  bool hasGottenTeachers = false;
+  bool isSearching = false;
+  AppBar theAppBar;
+  IconButton searchAction;
   @override
   void initState() {
+    searchAction = IconButton(
+      icon: (Icon(Icons.search)),
+      onPressed: null,
+    );
     titleController = new AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     super.initState();
       getTeachers();
-
-      }
+            }
       @override
       Widget build(BuildContext context) {
-        return Scaffold(appBar: AppBar(
+       theAppBar = AppBar(
+            actions: <Widget>[
+              searchAction
+            ],
           backgroundColor: Constants.baseColor,
           title: AnimatedSwitcher(child:titleWidget, duration: Duration(milliseconds: 500), switchInCurve: Curves.bounceInOut,switchOutCurve: Curves.bounceInOut,transitionBuilder: (w,a)=>ScaleTransition(child: w,scale: a,),)
-        ),
+        );
+
+        return Scaffold(
+          key: _scaffoldkey,
+          appBar: theAppBar,
         body: bodyWidget,
         
         );
@@ -113,19 +129,94 @@ class Teachers extends StatefulWidget {
         }
 
         teachers = format2;
-        hasGottenTeachers = true;
+        usedTeachers = teachers;
+        
+
         setState(() {
-          bodyWidget = teacherViewMaker(teachers);
+          
+          hasGottenTeachers = true;
+          searchAction = IconButton(
+                splashColor: hasGottenTeachers?Constants.antiColor:null,
+                icon: (Icon(Icons.search)),
+                onPressed: (){
+                  
+                  if(isSearching){
+                    setState(() {
+                      titleWidget = Text("Staff Directory");
+                    });
+                    isSearching = false;
+                  }else{
+                    setState(() {
+                      titleWidget = new Container(
+                        padding: EdgeInsets.only(bottom: 10, top: 2),
+                        child: TextField(
+                          style: TextStyle(color: Colors.white),
+                          onChanged: (name){
+                            print(name);
+                             // print("MADE IT HERE1");
+                              //print(teachers);
+
+                            List searchedTeacherList = [];
+                            for (Map teacher in teachers) {
+                              //print("MADE IT HERE");
+                             // print(teacher);
+                              if(teacher['name'].toUpperCase().contains(name.toUpperCase())||teacher['position'].toUpperCase().contains(name.toUpperCase())){
+                                searchedTeacherList.add(teacher);
+                               // print("adding Teacher");
+                              }
+                            }
+                            print("IT GOT THROGUH");
+                            usedTeachers = searchedTeacherList;
+                            setState(() {
+                                 bodyWidget = teacherViewMaker(usedTeachers, context, _scaffoldkey);//Container(color: Colors.accents[name.length],);
+
+                            });
+                            
+                          },
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Colors.white),
+                          labelText: "Find for your teacher",
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Constants.antiColor)
+                          ),
+                          // border: OutlineInputBorder(
+                          //   borderSide: BorderSide(color: Colors.white),
+                          //   borderRadius: BorderRadius.circular(25)
+                          // )
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(25)
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(25)
+                          )
+                        ),
+                      ),);
+                    });
+                    isSearching = true;
+
+                  }
+                },
+              );
+
+          bodyWidget = teacherViewMaker(usedTeachers, context, _scaffoldkey);
         });
         
       }
 
-    Widget teacherViewMaker(List teachers) {
+   
+ 
+    }
+     Widget teacherViewMaker(List teachers, BuildContext context, GlobalKey<ScaffoldState> _scaffoldkey) {
+      print("rebuild");
       return ListView.separated(
         itemCount: teachers.length,
         padding: EdgeInsets.all(25),
         separatorBuilder: (c,i)=>Container(height: 30,),
         itemBuilder: (c,i)=>RaisedButton(
+          splashColor: Constants.antiColor,
           padding: EdgeInsets.all(15),
           color: Colors.white,
           elevation: 15,
@@ -148,7 +239,44 @@ class Teachers extends StatefulWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                CupertinoButton(child: Text(teachers[i]['email'], style: TextStyle(fontSize: 18),), onPressed: (){},padding: EdgeInsets.zero,),
+                CupertinoButton(child: Text(teachers[i]['email'], style: TextStyle(fontSize: 18),), onPressed: (){
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (c)=>CupertinoActionSheet(
+                      cancelButton: CupertinoActionSheetAction(child: Text("Cancel"),onPressed: ()=>Navigator.of(context).pop(),),
+                      actions: <Widget>[
+                        CupertinoActionSheetAction(
+                          child: Text("Share"),
+                          onPressed: (){
+                            Navigator.of(context).pop();
+                            Share.share(teachers[i]['name']+"'s email is "+teachers[i]['email']);
+                          },
+                        ),
+                        CupertinoActionSheetAction(
+                          child: Text("Copy"),
+                          onPressed: (){
+                            try {
+                              Vibrate.feedback(FeedbackType.success);
+                            } catch (e) {
+                            }
+                            s.Clipboard.setData(s.ClipboardData(text: teachers[i]['email']));
+                            Navigator.of(context).pop();
+                            _scaffoldkey.currentState.showSnackBar(SnackBar(
+                              backgroundColor: Constants.baseColor,
+                              behavior: SnackBarBehavior.floating,
+                              action: SnackBarAction(
+                                textColor: Colors.white,
+                                label: "Ok",
+                                onPressed: ()=>_scaffoldkey.currentState.hideCurrentSnackBar(),
+                              ),
+                              content: Text(teachers[i]['name']+"'s email has been copied to your clipboard!"),
+                            ));
+                          },
+                        )
+                      ],
+                    )
+                  );
+                },padding: EdgeInsets.zero,),
                 FloatingActionButton(
                   onPressed: ()=>Share.share(teachers[i]['name']+"'s info:"+"\n"+"Position: "+teachers[i]['position']+"\n"+(teachers[i]['ex'].toString().trim().isNotEmpty?"Extension: "+teachers[i]['ex']+"\n":"")+(teachers[i]['email'].toString().trim().isNotEmpty?"Email: "+teachers[i]['email']+".":"")),
                   mini: true,
@@ -163,6 +291,3 @@ class Teachers extends StatefulWidget {
       );
     }
 
- 
-    }
-    
