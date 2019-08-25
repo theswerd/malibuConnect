@@ -134,7 +134,11 @@ class _AddToChecklistState extends State<AddToChecklist> {
   TextEditingController subtitleController;
   String emoji = "";
   String color = Colors.black.value.toString();
-  
+  bool hasDate = false;
+  bool hasEmoji = false;
+  DateTime currentDate = DateTime.now().add(Duration(days:1));
+  DateTime theDate = DateTime.now(); //Just so its not null to stop any possible errors
+
   LocalStorage checklistStorage;
 
   @override
@@ -142,12 +146,12 @@ class _AddToChecklistState extends State<AddToChecklist> {
     super.initState();
 
     checklistStorage = widget.checklistStorage;
-
     titleController = new TextEditingController();
     subtitleController = new TextEditingController();
   }
   @override
   Widget build(BuildContext context) {
+    List emojis = ["😀","😇","😂","😛", "🤑", "😎", "🤓", "🧐" "🤠","🤯","👩‍🏭", "👨‍🏭", "👩‍🔧", "👨‍🔧", "👩‍🌾", "👨‍🌾", "👩‍🍳", "👨‍🍳", "👩‍🎤", "👨‍🎤","👩‍🎨", "👨‍🎨", "👩‍🏫", "👨‍🏫", "👩‍🎓", "👨‍🎓", "👩‍💼", "👨‍💼", "👩‍💻", "👨‍💻", "👩‍🔬", "👨‍🔬", "👩‍🚀", "👨‍🚀", "👩‍⚕️" ,"👨‍⚕️", "👩‍⚖️", "👨‍⚖️", "👩‍✈️", "👨‍✈️", "💂‍", "🕵️‍", "🤶", "🎅" ];
     return Scaffold(
       appBar: AppBar(
         title: Text("Add to Checklist"),
@@ -185,11 +189,12 @@ class _AddToChecklistState extends State<AddToChecklist> {
               children: <Widget>[
               Text("What Day:", style: TextStyle(fontSize: 18)),
               CupertinoButton.filled(
-                child: Text("Add Day"),
+                child: Text(hasDate?"Change Day":"Add Day"),
                 onPressed: (){
                   showModalBottomSheet(
                     context: context,
                     builder: (c){
+
                       return Container(
                         height: 400,
                         child: Column(
@@ -197,7 +202,14 @@ class _AddToChecklistState extends State<AddToChecklist> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                CupertinoButton(child: Text("Cancel"),onPressed: (){Navigator.of(context).pop();},)
+                                CupertinoButton(child: Text("Cancel"),onPressed: ()=>Navigator.of(context).pop(),),
+                                CupertinoButton(child: Text("Add Date"),onPressed: (){
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    hasDate = true;
+                                    theDate = currentDate;
+                                  });
+                                },)
                               ],
                             ),
                             Container(
@@ -205,11 +217,45 @@ class _AddToChecklistState extends State<AddToChecklist> {
                               height: 340,
                               child: CupertinoDatePicker(
                                 mode: CupertinoDatePickerMode.date,
-                                initialDateTime: DateTime.now(),
+                                initialDateTime: currentDate,
                                 onDateTimeChanged: (newDate){
+                                  currentDate = newDate;
                                   print(newDate);
                                 },
                               ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  );
+                },
+              )
+            ],),
+            Container(height: 40,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+              Text("Emoji:", style: TextStyle(fontSize: 18)),
+              CupertinoButton.filled(
+                child: Text(hasEmoji?"Change Emoji":"Add Emoji"),
+                onPressed: (){
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (c){
+
+                      return Container(
+                        height: 400,
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(0),
+                              height: 340,
+                              child: GridView.builder(
+                                itemCount: ,
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5),
+                                itemBuilder: (c,i)=>,
+                              )
                             ),
                           ],
                         ),
