@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:malibu/teachers.dart';
 import 'package:share/share.dart';
 import 'constants.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -47,6 +48,18 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
                 color: Constants.baseColor
               ),
               child: Image.asset('assets/baselogo.png'),
+            ),
+            ListTile(
+              title: Text("Staff Directory"),
+              subtitle: Text("Find your teachers"),
+              leading: Icon(MdiIcons.teach, color: Colors.black,),
+              onTap: ()=>Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:(c)=>Teachers(),
+                  fullscreenDialog: true,
+                  maintainState: true
+                )
+              ),
             )
           ],
         ),
@@ -68,13 +81,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: TextStyle(color: Colors.black),
-                          children: <TextSpan>[
-                            
+                          children: <TextSpan>[//officialWebsiteAction
+                            TextSpan(text: "The "),
+                            TextSpan(text: "Malibu High School", style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: " app is your personal assistant through your time at "),
+                            TextSpan(text: "Malibu High School.", style: TextStyle(fontWeight: FontWeight.bold))
                           ]
                         ),
                       ),
+                      actions: <Widget>[
+                        CupertinoDialogAction(
+                          child: Text("Ok"),
+                          onPressed: ()=>Navigator.of(context).pop(),
+                        )
+                      ],
                     )
                   ),
+
                 ),
                 CupertinoActionSheetAction(
                   child: Text("Share"),
@@ -90,6 +113,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
               case 3:
                 break;
             }
+            showCupertinoModalPopup(
+              context: context,
+              builder: (c)=>CupertinoActionSheet(
+                title: Text("Extra Info"),
+                actions: children,
+                cancelButton: CupertinoActionSheetAction(
+                  child: Text("Cancel"),
+                  onPressed: ()=>Navigator.of(context).pop(),
+                ),
+              )
+            );
           },)
         ],
         leading: Tooltip(
@@ -97,6 +131,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
           child: IconButton(
             icon: Icon(Icons.menu),
             onPressed: ()=>scaffoldKey.currentState.openDrawer(),
+            
           ),
         ),
         backgroundColor: Constants.baseColor,
