@@ -29,9 +29,6 @@ dependencies:
   url_launcher: ^5.1.2
   vibrate: ^0.0.4 #Add android permission
 
-  upgrader: ^0.5.1+1
-
-
   google_maps_flutter:
 
   share:

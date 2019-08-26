@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'basepage.dart';
-import 'package:upgrader/upgrader.dart';
 
 
 
