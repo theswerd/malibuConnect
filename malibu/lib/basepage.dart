@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'constants.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import 'package:upgrader/upgrader.dart';
 import 'package:malibu/calender.dart';
 import 'package:malibu/homepage.dart';
 import 'map.dart';
@@ -39,6 +40,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin, Auto
 
         ],
       );
+      if(Upgrader().isUpdateAvailable()){}
   }
   @override
   Widget build(BuildContext context) {

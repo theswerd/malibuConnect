@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 class Constants {
  static Color baseColor  = Color(0xFF00A79D);
  static Color antiColor = Colors.deepPurpleAccent;// possible secondary
- static String ourWebsite = "";
+ static String ourWebsite = "https://apps.apple.com/us/app/malibu-high-school/id1477792568";
  static String reportURL = "https://forms.gle/8vCkCU597ZGsfGNF9";
  static String joinTheTeamURL = "https://forms.gle/HTQfeA99kJvcXyNT7";
  static String feedbackURL = "https://forms.gle/2L6Mp1ASNDRyYpiA9";

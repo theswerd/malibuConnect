@@ -343,15 +343,15 @@ class _AddToChecklistState extends State<AddToChecklist> {
                 },
               )
             ],),
-            Container(height: hasDate?15:0,),
+            Container(height: hasDate?/*15*/0:0,),
             hasDate?Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Add Notification:", style: TextStyle(fontSize: 18)),
-                CupertinoSwitch(
-                  value: notification,
-                  onChanged: (v){},
-                )
+                // Text("Add Notification:", style: TextStyle(fontSize: 18)),
+                // CupertinoSwitch(
+                //   value: notification,
+                //   onChanged: (v){},
+                // )
             ],
             ):Container(height: 0,),
             Container(height: 40,),
