@@ -37,6 +37,8 @@ dependencies:
   flutter_webview_plugin: ^0.3.7
 
   localstorage: ^2.0.0
+  
+  flutter_material_color_picker: ^1.0.3
 
   material_design_icons_flutter: ^3.2.4096
   cupertino_icons: ^0.1.2
