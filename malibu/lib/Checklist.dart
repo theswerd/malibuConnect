@@ -154,14 +154,16 @@ class _ChecklistState extends State<Checklist> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)
                     ),
-                    child: Column(
+                    child: Stack(
                       children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Column(
                           children: <Widget>[
-                            Container(),
-                            currentMap['hasDate']==true?
-                            DateTime.fromMillisecondsSinceEpoch(currentMap['date']).isBefore(DateTime.now())?Text(diffenenceAbs.toString()+ (diffenenceAbs<=1?" Day Late":" Days Late"), style: TextStyle(color: Colors.red)):Container(height: 0,):Container(height: 0,)//==true is just error catching
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(),
+                                currentMap['hasDate']==true?
+                                DateTime.fromMillisecondsSinceEpoch(currentMap['date']).isBefore(DateTime.now())?Text(diffenenceAbs.toString()+ (diffenenceAbs<=1?" Day Late":" Days Late"), style: TextStyle(color: Colors.red)):Container(height: 0,):Container(height: 0,)//==true is just error catching
                   ],
                 ),
                 Row(
@@ -176,7 +178,15 @@ class _ChecklistState extends State<Checklist> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                   Text(currentMap['subtitle'], style: TextStyle(fontSize: 18, color: Colors.grey[700]),),
-                  IconButton(icon: Icon(Icons.check_box_outline_blank, size: 30,),
+                ],
+                ),
+                
+              ],
+            ),
+            Positioned(
+              right: -10,
+              bottom: -13,
+              child: IconButton(icon: Icon(Icons.check_box_outline_blank, size: 30,),
                     padding: EdgeInsets.zero,
                     onPressed: (){
                       showCupertinoModalPopup(
@@ -210,10 +220,11 @@ class _ChecklistState extends State<Checklist> {
                         )
                       );
                     },
-                  )
-                ],)
-              ],
-            ),
+                  ),
+
+            )
+            ],
+          ),
 
             onPressed: (){},
           ),

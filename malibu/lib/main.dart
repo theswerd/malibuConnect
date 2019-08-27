@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Malibu High School',
       theme: ThemeData(
         // This is the theme of your application.
         //

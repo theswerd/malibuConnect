@@ -27,7 +27,7 @@ dependencies:
   webview_flutter: ^0.3.13
   flutter_widget_from_html:
   url_launcher: ^5.1.2
-  vibrate: ^0.0.4 #Add android permission
+  vibrate: ^0.0.4 
 
   google_maps_flutter:
 

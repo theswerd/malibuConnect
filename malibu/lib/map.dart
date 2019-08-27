@@ -238,7 +238,7 @@ class _MapClassState extends State<MapClass> {
       position: LatLng(34.02507875613889, -118.8266434147954),
       markerId: MarkerId("Amphitheatre"),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
-      infoWindow: InfoWindow(title: "Smphitheatre", snippet: "The Malibu High School Amphitheatre.")
+      infoWindow: InfoWindow(title: "Amphitheatre", snippet: "The Malibu High School Amphitheatre.")
     ),
     Marker(
       position: LatLng(34.02431904408323, -118.82784236222506),
